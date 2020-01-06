@@ -479,6 +479,8 @@ public class JcImpl implements JcService {
                             jcZxXqImgs.setImgsRowno(iasb + 1);
                             jcZxXqImgs.setZxXqImgs(imName);
                             jcZxXqImgsMapper.insert(jcZxXqImgs);
+                            //控制一下访问频率
+                            Thread.sleep(1000);
                         }
 
                         elements.select("a").remove();
@@ -540,6 +542,8 @@ public class JcImpl implements JcService {
                         jcZxXqImgs.setImgsRowno(ias + 1);
                         jcZxXqImgs.setZxXqImgs(imName);
                         jcZxXqImgsMapper.insert(jcZxXqImgs);
+                        //控制一下访问频率
+                        Thread.sleep(1000);
                     }
                     //删掉原数据中的A标签
                     jeHtm.select("a").remove();
@@ -554,6 +558,8 @@ public class JcImpl implements JcService {
 
                 }
                 jcZxMapper.updJcZx("1",jcZx.getZxId());
+                //控制访问频率
+                Thread.sleep(5000);
             } catch (Exception e) {
                 jcZxMapper.updJcZx("2",jcZx.getZxId());
                 log.error("明细错：" + jcZx.getXqUrl(), e);
