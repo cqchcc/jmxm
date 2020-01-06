@@ -379,9 +379,10 @@ public class JcImpl implements JcService {
 
     public void getZxDataXq() {
 
-        List<JcZx> list = jcZxMapper.selJcZx();
-        for (int a = 0; a < list.size(); a++) {
-            JcZx jcZx = list.get(a);
+        int countJcZx = jcZxMapper.countJcZx();
+
+        for (int a = 0; a < countJcZx; a++) {
+            JcZx jcZx = jcZxMapper.selJcZx();
             try {
                 String html = OpenHttps.https(jcZx.getXqUrl());
                 if (html == null) {

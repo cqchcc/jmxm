@@ -15,9 +15,12 @@ public interface JcZxMapper extends BaseMapper<JcZx> {
     @Select("SELECT count(*) from jc_zx where zx_bt=#{zxBt} and xq_url=#{xqUrl} ")
     int selXqUrl(@Param("zxBt") String zxBt, @Param("xqUrl") String xqUrl);
 
-    @Select("SELECT zx_id,xq_url FROM jc_zx WHERE xq_flag=0")
-    List<JcZx> selJcZx();
+    @Select("SELECT zx_id,xq_url FROM jc_zx WHERE xq_flag=0 limit 1")
+    JcZx selJcZx();
 
     @Update("update jc_zx set xq_flag=#{flag} where zx_id=#{zxId}")
     void updJcZx(@Param("flag") String flag,@Param("zxId") String zxId);
+
+    @Select("SELECT count(*) FROM jc_zx WHERE xq_flag=0")
+    int countJcZx();
 }
