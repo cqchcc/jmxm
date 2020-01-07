@@ -21,6 +21,10 @@ spring:
       test-on-borrow: false
       test-while-idle: true
       time-between-eviction-runs-millis: 18800
+  mvc:
+    static-path-pattern: /imgs/**
+  resources:
+    static-locations: /home/cc/frontend/zxImgs/
 
   #此项配置是用来忽略不同的bean的同名异常的  不配置默认为true
   #true为忽视。false为不忽视编译会报错
