@@ -1,8 +1,8 @@
 package com.cn.jc.jmxm.controll;
 
 
-import com.cn.jc.jmxm.service.XmService;
 import com.cn.jc.jmxm.comm.config.FendaResponse;
+import com.cn.jc.jmxm.entity.jc.JcTypeList;
 import com.cn.jc.jmxm.entity.jc.JcXq;
 import com.cn.jc.jmxm.entity.jc.dto.XmDto;
 import com.cn.jc.jmxm.entity.jc.vo.JcTypeVo;
@@ -108,6 +108,22 @@ public class XmControll {
             return new FendaResponse().message("SUCCESS").code(200).date(page);
         } catch (Exception e) {
             log.error("根据项目类型查询所有项目异常", e);
+            return new FendaResponse().message("ERROR").code(500);
+        }
+    }
+
+    /**
+     * 查询所有项目大类
+     *
+     * @return
+     */
+    @GetMapping("/get_type")
+    public FendaResponse getDlAll(){
+        try {
+            List<JcTypeList> jcTypeVo = xmService.selJcTypeDl();
+            return new FendaResponse().message("SUCCESS").code(200).date(jcTypeVo);
+        } catch (Exception e) {
+            log.error("项目大类查询异常", e);
             return new FendaResponse().message("ERROR").code(500);
         }
     }

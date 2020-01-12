@@ -34,6 +34,10 @@ public class JcControll {
         return new FendaResponse().message("SUCCESS");
     }
 
+    /**
+     * 获取咨询详情
+     * @return
+     */
     @PostMapping("/get_zx_data_xq")
     public FendaResponse getZxDataXq(){
         jcService.getZxDataXq();

@@ -1,13 +1,12 @@
 server:
-  port: 8081
+  potr: 8081
 spring:
   application:
     name: jmxm
   datasource:
-    url: jdbc:mysql://39.104.23.216:3306/test?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-    username: ant-storm
-    password: X2AmjZsaNt25r2Sn
-    #数据库连接池
+    url: jdbc:mysql://111.229.243.156:3306/jcxm?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: syt520!@#$%$$####$$$
     hikari:
       maximum-pool-size: 30
       minimum-idle: 10
@@ -25,12 +24,8 @@ spring:
     static-path-pattern: /imgs/**
   resources:
     static-locations: /home/cc/frontend/zxImgs/
-
-  #此项配置是用来忽略不同的bean的同名异常的  不配置默认为true
-  #true为忽视。false为不忽视编译会报错
   main:
     allow-bean-definition-overriding: true
-  #此配置是配置前端上传文件的最大值
   servlet:
     multipart:
-      max-file-size: 50MB
+    max-file-size: 50MB

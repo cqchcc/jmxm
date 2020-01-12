@@ -83,4 +83,10 @@ public class XmImpl implements XmService {
     public List<JcTypeVo> getXmType() {
         return jcTypeListMapper.selJcXqXqType();
     }
+
+    @Override
+    public List<JcTypeList> selJcTypeDl(){
+        return jcTypeListMapper.selAll();
+
+    }
 }

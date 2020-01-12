@@ -20,4 +20,7 @@ public interface JcTypeListMapper extends BaseMapper<JcTypeList> {
 
     @Select("SELECT id,name jc_type_list where flag=1")
     List<JcTypeVo> selJcXqXqType();
+
+    @Select("SELECT * FROM jc_type_list ")
+    List<JcTypeList> selAll();
 }

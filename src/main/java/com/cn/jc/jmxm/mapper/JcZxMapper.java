@@ -25,7 +25,8 @@ public interface JcZxMapper extends BaseMapper<JcZx> {
     @Select("SELECT count(*) FROM jc_zx WHERE xq_flag=0")
     int countJcZx();
 
-
+    @Select("SELECT * FROM jc_zx WHERE xm_id=#{xmId} and flag=#{flag} ")
+    List<JcZx> selJcZx(@Param("xmId")String xmId ,@Param("flag")String flag);
 
     @Select("<script>" +
             "SELECT * FROM jc_xq  where xq_flag !=3 " +

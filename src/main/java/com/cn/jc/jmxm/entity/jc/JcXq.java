@@ -18,6 +18,6 @@ public class JcXq {
   private String xqFlag;//详情状态 发布状态。1为草稿，2为发布，3为删除
   private String xqDate;//记录上次修改时间
   private String xqUrl;//详细url用于后期爬新闻
-
+  private String zxFlag;//判断质询是否被抓取
 
 }

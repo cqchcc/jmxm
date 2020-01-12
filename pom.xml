@@ -97,6 +97,12 @@
             <artifactId>jsoup</artifactId>
             <version>1.11.3</version>
         </dependency>
+        <!--&lt;!&ndash; maria DB 数据库&ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.commons</groupId>-->
+            <!--<artifactId>commons-dbcp2</artifactId>-->
+            <!--<version>2.6.0</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>

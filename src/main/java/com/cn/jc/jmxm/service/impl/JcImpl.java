@@ -59,7 +59,6 @@ public class JcImpl implements JcService {
             // String url = "httpps://www.chinafloor.cn/brand/list-htm-action-all.html";
             // String url = "https://www.chinachugui.com/brand/list-htm-action-all.html";
             String html = OpenHttps.https(jcType.getUrl());
-
             Document document = Jsoup.parse(html);
             Elements cite = document.select("cite");
             String ym = cite.toString().substring(cite.toString().indexOf("条") + 2, cite.toString().length() - 8);
@@ -559,7 +558,6 @@ public class JcImpl implements JcService {
                 }
                 jcZxMapper.updJcZx("1",jcZx.getZxId());
                 //控制访问频率
-                Thread.sleep(5000);
             } catch (Exception e) {
                 jcZxMapper.updJcZx("2",jcZx.getZxId());
                 log.error("明细错：" + jcZx.getXqUrl(), e);
