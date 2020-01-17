@@ -21,7 +21,7 @@ public class ZxImpl implements ZxService {
     @Override
     public List<JcZx> selJcZx(String id,String flag) {
         List<JcZx> list = jcZxMapper.selJcZx(id,"2");
-        return null;
+        return list;
     }
 
     @Override

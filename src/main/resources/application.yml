@@ -5,6 +5,7 @@ spring:
     name: jmxm
   datasource:
     url: jdbc:mysql://111.229.243.156:3306/jcxm?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    #url: jdbc:mysql://111.229.243.156:3306/jmxm_test?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: syt520!@#$%$$####$$$
     hikari:
@@ -29,3 +30,6 @@ spring:
   servlet:
     multipart:
     max-file-size: 50MB
+logging:
+ level:
+  com.cn.jc.jmxm.mapper: debug

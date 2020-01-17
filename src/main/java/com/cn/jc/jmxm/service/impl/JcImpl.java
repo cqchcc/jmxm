@@ -378,189 +378,197 @@ public class JcImpl implements JcService {
 
     public void getZxDataXq() {
 
-        int countJcZx = jcZxMapper.countJcZx();
+//        int countJcZx = jcZxMapper.countJcZx();
+////
+////        for (int a = 0; a < countJcZx; a++) {
 
-        for (int a = 0; a < countJcZx; a++) {
-            JcZx jcZx = jcZxMapper.selJcZx();
-            try {
-                String html = OpenHttps.https(jcZx.getXqUrl());
-                if (html == null) {
-                    return;
-                }
-                Document document = Jsoup.parse(html);
-
-                String ss = document.select("div").toString();
-                String bl = ss.substring(12, ss.indexOf("-top-box"));
-                //先判断是否有多页
-                Elements fyxqUrl = document.select("div[class=" + bl + "-page]").select("a");
-
-                if (fyxqUrl.size() <= 0) {
-                    fyxqUrl = document.select("ul[class=" + bl + "-read-page cf]").select("a");
-                }
-                log.info("开始处理：" + jcZx.getXqUrl());
-
-                if (fyxqUrl.size() > 0) {
-                    //分页处理
-                    Elements wy = fyxqUrl.select("a");
-                    int zongyeshu = 0;
-                    for (int ias = 0; ias < wy.size(); ias++) {
-                        try {
-                            String xq = wy.get(ias).text();
-                            zongyeshu = Integer.valueOf(xq);
-                        } catch (Exception e) {
-                            log.info("忽略");
-                        }
+        for (int q = 0; q < 10000; q++) {
+            log.info("11111111111111111111");
+            List<JcZx> jcZxList = jcZxMapper.selJcZxs();
+            log.info("2222222222222222222222222"+jcZxList.size());
+            for (int a = 0; a < jcZxList.size(); a++) {
+                log.info("33333333333333333333333");
+                JcZx jcZx = jcZxList.get(a);
+                try {
+                    String html = OpenHttps.https(jcZx.getXqUrl());
+                    if (html == null) {
+                        return;
                     }
-                    for (int ias = 1; ias <= zongyeshu; ias++) {
+                    Document document = Jsoup.parse(html);
+
+                    String ss = document.select("div").toString();
+                    String bl = ss.substring(12, ss.indexOf("-top-box"));
+                    //先判断是否有多页
+                    Elements fyxqUrl = document.select("div[class=" + bl + "-page]").select("a");
+
+                    if (fyxqUrl.size() <= 0) {
+                        fyxqUrl = document.select("ul[class=" + bl + "-read-page cf]").select("a");
+                    }
+                    log.info("开始处理：" + jcZx.getXqUrl());
+
+                    if (fyxqUrl.size() > 0) {
+                        //分页处理
+                        Elements wy = fyxqUrl.select("a");
+                        int zongyeshu = 0;
+                        for (int ias = 0; ias < wy.size(); ias++) {
+                            try {
+                                String xq = wy.get(ias).text();
+                                zongyeshu = Integer.valueOf(xq);
+                            } catch (Exception e) {
+                                log.info("忽略");
+                            }
+                        }
+                        for (int ias = 1; ias <= zongyeshu; ias++) {
+                            JcZxXq jcZxXq = new JcZxXq();
+                            jcZxXq.setZxId(jcZx.getZxId());
+
+                            String url = jcZx.getXqUrl();
+                            //分页有两种模式，第一种不行就上第二种，不排除还有第三种
+                            StringBuffer sb = new StringBuffer();
+                            sb.append(url).insert(url.lastIndexOf("."), ("-page-" + ias));
+                            String htm = OpenHttps.https(sb.toString());
+
+                            Document document404 = Jsoup.parse(htm);
+                            Elements el404 = document404.select("div[class=error404]");
+
+                            StringBuffer sbs = new StringBuffer();
+
+                            if (el404.size() > 0) {
+                                sbs.append(url).insert(url.lastIndexOf("."), ("_" + ias));
+                                htm = OpenHttps.https(sbs.toString());
+                                log.info("sbs" + sbs);
+                            }
+
+
+                            Document docs = Jsoup.parse(htm);
+
+                            Elements elements = docs.select("div[class=" + bl + "-detail]").select("p");
+
+                            Elements elements1 = elements.select("div[class=js_content]").select("p");
+                            if (elements1.size() > 0)
+                                elements = elements1;
+
+
+                            List<Element> zxxqImgs = elements.select("img");
+
+                            for (int iasb = 0; iasb < zxxqImgs.size(); iasb++) {
+                                JcZxXqImgs jcZxXqImgs = new JcZxXqImgs();
+                                String iasUrl = zxxqImgs.get(iasb).attr("original");
+                                if (iasUrl.equals("") || iasUrl == null) {
+                                    iasUrl = zxxqImgs.get(iasb).attr("src");
+                                }
+                                String hz = iasUrl.substring(iasUrl.lastIndexOf("."));
+                                //出现这个说明是腾讯的图片没被授权展示不了
+                                if (iasUrl.indexOf("mmbiz.qpic.cn") > 0) {
+                                    continue;
+                                }
+                                if (iasUrl.lastIndexOf(".") < 0) {
+                                    continue;
+                                }
+                                if (hz.equals(".gif")) {
+                                    String s = zxxqImgs.get(iasb).attr("original");
+                                    if (s != null && !s.equals("")) {
+                                        iasUrl = s;
+                                    }
+                                }
+                                if (hz.length() > 4) {
+                                    hz = ".jpg";
+                                }
+                                String imName = OpenHttps.imgs(iasUrl, jcZx.getZxId() + "-" + ias + "-" + iasb + hz, "zx");
+
+                                //找到要替换的内容
+                                Element node = zxxqImgs.get(iasb);
+                                //替换原网页中的内容
+                                node.attr("src", "");
+                                node.attr("original", imName);
+                                jcZxXqImgs.setZxId(jcZx.getZxId());
+                                jcZxXqImgs.setImgsRowno(iasb + 1);
+                                jcZxXqImgs.setZxXqImgs(imName);
+                                jcZxXqImgsMapper.insert(jcZxXqImgs);
+
+                            }
+
+                            elements.select("a").remove();
+                            String xq = elements.toString();
+
+                            try {
+                                String qq = xq.replace(xq.substring(xq.indexOf("【"), xq.indexOf("】") + 1), "");
+                                jcZxXq.setZxXq(qq);
+                            } catch (Exception e) {
+                                jcZxXq.setZxXq(xq);
+                            }
+
+                            jcZxXq.setRowno(ias);
+                            jcZxXqMapper.insert(jcZxXq);
+                        }
+                    } else {
+
                         JcZxXq jcZxXq = new JcZxXq();
                         jcZxXq.setZxId(jcZx.getZxId());
-
-                        String url = jcZx.getXqUrl();
-                        //分页有两种模式，第一种不行就上第二种，不排除还有第三种
-                        StringBuffer sb = new StringBuffer();
-                        sb.append(url).insert(url.lastIndexOf("."), ("-page-" + ias));
-                        String htm = OpenHttps.https(sb.toString());
-
-                        Document document404 = Jsoup.parse(htm);
-                        Elements el404 = document404.select("div[class=error404]");
-
-                        StringBuffer sbs = new StringBuffer();
-
-                        if (el404.size() > 0) {
-                            sbs.append(url).insert(url.lastIndexOf("."), ("_" + ias));
-                            htm = OpenHttps.https(sbs.toString());
-                            log.info("sbs" + sbs);
-                        }
-
-
-                        Document docs = Jsoup.parse(htm);
-
-                        Elements elements = docs.select("div[class=" + bl + "-detail]").select("p");
-
-                        Elements elements1 = elements.select("div[class=js_content]").select("p");
+                        jcZxXq.setRowno(1);
+                        //单页
+                        Elements jeHtm = document.select("div[class=" + bl + "-detail]").select("p");
+                        Elements elements1 = jeHtm.select("div[class=js_content]").select("p");
                         if (elements1.size() > 0)
-                            elements = elements1;
+                            jeHtm = elements1;
 
+                        List<Element> zxxqImgs = jeHtm.select("img");
 
-                        List<Element> zxxqImgs = elements.select("img");
+                        for (int ias = 0; ias < zxxqImgs.size(); ias++) {
+                            Element element = zxxqImgs.get(ias);
+                            if (element.toString().indexOf("mmbiz.qpic.cn") > 0) {
+                                continue;
+                            }
 
-                        for (int iasb = 0; iasb < zxxqImgs.size(); iasb++) {
                             JcZxXqImgs jcZxXqImgs = new JcZxXqImgs();
-                            String iasUrl = zxxqImgs.get(iasb).attr("original");
-                            if (iasUrl.equals("") || iasUrl == null) {
-                                iasUrl = zxxqImgs.get(iasb).attr("src");
+                            String iasUrl = element.attr("src");
+                            if (iasUrl.lastIndexOf(".") < 0) {
+                                continue;
                             }
                             String hz = iasUrl.substring(iasUrl.lastIndexOf("."));
-                            //出现这个说明是腾讯的图片没被授权展示不了
-                            if (iasUrl.indexOf("mmbiz.qpic.cn") > 0) {
-                                continue;
-                            }
-                            if (iasUrl.lastIndexOf(".")<0){
-                                continue;
-                            }
                             if (hz.equals(".gif")) {
-                                String s = zxxqImgs.get(iasb).attr("original");
+                                String s = element.attr("original");
                                 if (s != null && !s.equals("")) {
                                     iasUrl = s;
                                 }
+
                             }
                             if (hz.length() > 4) {
                                 hz = ".jpg";
                             }
-                            String imName = OpenHttps.imgs(iasUrl, jcZx.getZxId() + "-" + ias + "-" + iasb + hz, "zx");
-
+                            String imName = OpenHttps.imgs(iasUrl, jcZx.getZxId() + "-" + ias + hz, "zx");
                             //找到要替换的内容
-                            Element node = zxxqImgs.get(iasb);
+                            Element node = element;
                             //替换原网页中的内容
                             node.attr("src", "");
                             node.attr("original", imName);
+
                             jcZxXqImgs.setZxId(jcZx.getZxId());
-                            jcZxXqImgs.setImgsRowno(iasb + 1);
+                            jcZxXqImgs.setImgsRowno(ias + 1);
                             jcZxXqImgs.setZxXqImgs(imName);
                             jcZxXqImgsMapper.insert(jcZxXqImgs);
-
                         }
-
-                        elements.select("a").remove();
-                        String xq = elements.toString();
-
+                        //删掉原数据中的A标签
+                        jeHtm.select("a").remove();
+                        String xq = jeHtm.toString();
                         try {
                             String qq = xq.replace(xq.substring(xq.indexOf("【"), xq.indexOf("】") + 1), "");
                             jcZxXq.setZxXq(qq);
                         } catch (Exception e) {
                             jcZxXq.setZxXq(xq);
                         }
-
-                        jcZxXq.setRowno(ias);
                         jcZxXqMapper.insert(jcZxXq);
+
                     }
-                } else {
-
-                    JcZxXq jcZxXq = new JcZxXq();
-                    jcZxXq.setZxId(jcZx.getZxId());
-                    jcZxXq.setRowno(1);
-                    //单页
-                    Elements jeHtm = document.select("div[class=" + bl + "-detail]").select("p");
-                    Elements elements1 = jeHtm.select("div[class=js_content]").select("p");
-                    if (elements1.size() > 0)
-                        jeHtm = elements1;
-
-                    List<Element> zxxqImgs = jeHtm.select("img");
-
-                    for (int ias = 0; ias < zxxqImgs.size(); ias++) {
-                        Element element = zxxqImgs.get(ias);
-                        if (element.toString().indexOf("mmbiz.qpic.cn") > 0) {
-                            continue;
-                        }
-
-                        JcZxXqImgs jcZxXqImgs = new JcZxXqImgs();
-                        String iasUrl = element.attr("src");
-                        if (iasUrl.lastIndexOf(".")<0){
-                            continue;
-                        }
-                        String hz = iasUrl.substring(iasUrl.lastIndexOf("."));
-                        if (hz.equals(".gif")) {
-                            String s = element.attr("original");
-                            if (s != null && !s.equals("")) {
-                                iasUrl = s;
-                            }
-
-                        }
-                        if (hz.length() > 4) {
-                            hz = ".jpg";
-                        }
-                        String imName = OpenHttps.imgs(iasUrl, jcZx.getZxId() + "-" + ias + hz, "zx");
-                        //找到要替换的内容
-                        Element node = element;
-                        //替换原网页中的内容
-                        node.attr("src", "");
-                        node.attr("original", imName);
-
-                        jcZxXqImgs.setZxId(jcZx.getZxId());
-                        jcZxXqImgs.setImgsRowno(ias + 1);
-                        jcZxXqImgs.setZxXqImgs(imName);
-                        jcZxXqImgsMapper.insert(jcZxXqImgs);
-                    }
-                    //删掉原数据中的A标签
-                    jeHtm.select("a").remove();
-                    String xq = jeHtm.toString();
-                    try {
-                        String qq = xq.replace(xq.substring(xq.indexOf("【"), xq.indexOf("】") + 1), "");
-                        jcZxXq.setZxXq(qq);
-                    } catch (Exception e) {
-                        jcZxXq.setZxXq(xq);
-                    }
-                    jcZxXqMapper.insert(jcZxXq);
+                    jcZxMapper.updJcZx("1", jcZx.getZxId());
+                    //控制访问频率
+                } catch (Exception e) {
+                    log.error("明细错：" + jcZx.getXqUrl(), e);
+                    jcZxMapper.updJcZx("2", jcZx.getZxId());
 
                 }
-                jcZxMapper.updJcZx("1",jcZx.getZxId());
-                //控制访问频率
-            } catch (Exception e) {
-                log.error("明细错：" + jcZx.getXqUrl(), e);
-                jcZxMapper.updJcZx("2",jcZx.getZxId());
 
             }
-
         }
     }
 
@@ -725,7 +733,7 @@ public class JcImpl implements JcService {
 
     public static void main(String[] args) {
         String ss = "sdfdsfsdfdsfdsf";
-        int s =ss.lastIndexOf(".");
+        int s = ss.lastIndexOf(".");
         System.out.println(s);
     }
 

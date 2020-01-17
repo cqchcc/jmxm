@@ -4,12 +4,13 @@ package com.cn.jc.jmxm.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cn.jc.jmxm.entity.jc.JcXq;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
-
+@Mapper
 public interface JcXqMapper extends BaseMapper<JcXq> {
     @Select("SELECT * FROM jc_xq where zx_flag=0")
     List<JcXq> selJcXq();
