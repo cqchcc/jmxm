@@ -46,7 +46,6 @@ public class XmControll {
 
     /**
      * 删除项目
-     *
      * @param xmId
      * @return
      */
@@ -80,6 +79,12 @@ public class XmControll {
 
     }
 
+    /**
+     * 更新项目详情 PS这里是传得整个项目详情上来
+     * @param xmDto
+     * @return
+     */
+    //TODO 此处需要优化为止更新指定属性
     @PostMapping("/upd_xm_xq")
     public FendaResponse updXmXq(@RequestBody XmDto xmDto) {
         try {

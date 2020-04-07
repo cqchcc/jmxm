@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 @Slf4j
 @Service
@@ -52,12 +53,8 @@ public class JcImpl implements JcService {
 
 
     @Override
-    public void getData() {
-        List<JcTypeList> jcTypeLists = jcTypeListMapper.selJcTypeListFlag();
-        jcTypeLists.forEach((JcTypeList jcType) -> {
+    public void getData(JcTypeList jcType) {
 
-            // String url = "httpps://www.chinafloor.cn/brand/list-htm-action-all.html";
-            // String url = "https://www.chinachugui.com/brand/list-htm-action-all.html";
             String html = OpenHttps.https(jcType.getUrl());
             Document document = Jsoup.parse(html);
             Elements cite = document.select("cite");
@@ -230,7 +227,7 @@ public class JcImpl implements JcService {
                         jcLiuYan.setPcData("1");
                         jcLiuYanMapper.insert(jcLiuYan);
                     }
-                    jcTypeListMapper.updJcTypeListFlag(jcType.getId());
+                    jcTypeListMapper.updJcTypeListFlag("1",jcType.getId());
 
 
                 } catch (Exception e) {
@@ -243,20 +240,18 @@ public class JcImpl implements JcService {
             }
 
 
-        });
+      //  });
 
 
     }
 
     @Override
-    public void getZxData() {
+    public void getZxData(JcXq jcxq) {
 
-        List<JcXq> jcXqList = jcXqMapper.selJcXq();
-        for (int q = 0; q < jcXqList.size(); q++) {
+//        List<JcXq> jcXqList = jcXqMapper.selJcXq();
+//        for (int q = 0; q < jcXqList.size(); q++) {
             try {
-
-
-                JcXq jcxq = jcXqList.get(q);
+            //    JcXq jcxq = jcXqList.get(q);
                 //单个项目的咨询信息。此处替换为表里面查出来的信息
                 String url = jcxq.getXqUrl();
                 String zxUrl = null;
@@ -281,7 +276,7 @@ public class JcImpl implements JcService {
 
                 String html = OpenHttps.https(zxUrl);
                 if (html == null) {
-                    continue;
+                    return;
                 }
                 Document document = Jsoup.parse(html);
                 String ss = document.select("div").toString();
@@ -299,7 +294,7 @@ public class JcImpl implements JcService {
                     jcLog.setJcUrl(zxUrl);
                     jcLogMapper.insert(jcLog);
                     jcXqMapper.upJcZxFlag(jcxq.getXqId());
-                    continue;
+                    return;
                 }
 
                 //此处拿到该咨询项目的分类ID
@@ -314,6 +309,7 @@ public class JcImpl implements JcService {
                     if (itemUrl == null) {
                         continue;
                     }
+
                     Document itemDocument = Jsoup.parse(itemUrl);
                     List<Element> itemElements = itemDocument.select("div[id=ajax_zt]").select("dl");
                     for (int ia = 0; ia < itemElements.size(); ia++) {
@@ -333,7 +329,7 @@ public class JcImpl implements JcService {
                                 continue;
                             }
 
-                            String zxId = flid + "Z" + RandomUtil.getRandom(10);
+                            String zxId = flid + "Z" + RandomUtil.getRandom(11);
                             xx = zxId;
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             String date = simpleDateFormat.format(new Date());
@@ -346,7 +342,7 @@ public class JcImpl implements JcService {
                             jcZx.setXmId(jcxq.getXqId());
                             String image = element.select("dt").select("a").select("img").attr("src");
                             if (image != null && !image.equals("")) {
-                                String imageName = OpenHttps.imgs(image, xmId + image.substring(image.lastIndexOf(".")), "zx");
+                                String imageName = OpenHttps.imgs(image, zxId + image.substring(image.lastIndexOf(".")), "zx");
                                 jcZx.setImgs(imageName);
                             }
 
@@ -370,22 +366,18 @@ public class JcImpl implements JcService {
                 }
                 jcXqMapper.upJcZxFlag(jcxq.getXqId());
             } catch (Exception e) {
-                log.error("期望出现所有异常都能不停的跑下去");
+                log.error("期望出现所有异常都能不停的跑下去",e);
             }
-        }
+ //       }
 
     }
 
     public void getZxDataXq() {
 
-//        int countJcZx = jcZxMapper.countJcZx();
-////
-////        for (int a = 0; a < countJcZx; a++) {
-
         for (int q = 0; q < 10000; q++) {
             log.info("11111111111111111111");
             List<JcZx> jcZxList = jcZxMapper.selJcZxs();
-            log.info("2222222222222222222222222"+jcZxList.size());
+            log.info("2222222222222222222222222" + jcZxList.size());
             for (int a = 0; a < jcZxList.size(); a++) {
                 log.info("33333333333333333333333");
                 JcZx jcZx = jcZxList.get(a);
@@ -731,10 +723,11 @@ public class JcImpl implements JcService {
 //    }
 
 
+
     public static void main(String[] args) {
-        String ss = "sdfdsfsdfdsfdsf";
-        int s = ss.lastIndexOf(".");
-        System.out.println(s);
+        String html = OpenHttps.https("https://s.taobao.com/search?q=高达&imgfile=&commend=all&ssid=s5-e&search_type=item&sourceId=tb.index&spm=a21bo.2017.201856-taobao-item.1&ie=utf8&initiative_id=tbindexz_20170306");
+        Document document = Jsoup.parse(html);
+        System.out.println(document);
     }
 
 }

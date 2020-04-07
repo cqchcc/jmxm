@@ -3,6 +3,7 @@ package com.cn.jc.jmxm.controll;
 import com.cn.jc.jmxm.comm.config.FendaResponse;
 import com.cn.jc.jmxm.service.JcService;
 
+import com.cn.jc.jmxm.service.ThreadPoolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,14 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class JcControll {
     @Autowired
     private JcService jcService;
+    @Autowired
+    private ThreadPoolService threadPoolService;
 
     /**
-     * 获取项目
+     * 抓取项目
      * @return
      */
     @PostMapping("/get_data")
     public FendaResponse logs() {
-        jcService.getData();
+        threadPoolService.threadPoll();
         return new FendaResponse().message("SUCCESS");
     }
 
@@ -30,7 +33,7 @@ public class JcControll {
      */
     @PostMapping("/get_zx_data")
     public FendaResponse getZxData(){
-        jcService.getZxData();
+        threadPoolService.threadPoolGetJcZx();
         return new FendaResponse().message("SUCCESS");
     }
 

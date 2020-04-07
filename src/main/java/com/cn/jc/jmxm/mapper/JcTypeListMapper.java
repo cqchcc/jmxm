@@ -10,14 +10,16 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Vector;
+
 @Mapper
 public interface JcTypeListMapper extends BaseMapper<JcTypeList> {
 
-    @Select("SELECT * FROM jc_type_list WHERE flag=0")
+    @Select("SELECT * FROM jc_type_list WHERE flag=0 ")
     List<JcTypeList> selJcTypeListFlag();
 
-    @Update("UPDATE jc_type_list set flag=1 where id=#{id}")
-    void updJcTypeListFlag(@Param("id") Long id);
+    @Update("UPDATE jc_type_list set flag=#{flag} where id=#{id} ")
+    int updJcTypeListFlag(@Param("flag") String flag, @Param("id") Long id);
 
     @Select("SELECT id,name jc_type_list where flag=1")
     List<JcTypeVo> selJcXqXqType();

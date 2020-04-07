@@ -42,6 +42,11 @@ public class ZxControll {
         }
     }
 
+    /**
+     * 获取单挑咨询的全部信息
+     * @param zxId 资讯Id
+     * @return
+     */
     @GetMapping("/get_zx_xq")
     public FendaResponse getZxXq(@RequestParam("zxId")String zxId){
         try {
@@ -53,6 +58,11 @@ public class ZxControll {
         }
     }
 
+    /**
+     * 删除指定资讯，没有做物理删除，只是改了状态
+     * @param zxId 资讯Id
+     * @return
+     */
     @PostMapping("/del_zx")
     public FendaResponse delZx(@RequestParam("zxId")String zxId){
         try {
@@ -63,6 +73,13 @@ public class ZxControll {
             return new FendaResponse().message("ERROR").code(500);
         }
     }
+
+    /**
+     * 更新资讯的全部信息，PS 这里要注意是全部信息，所以前端需要传该资讯的所有信息上来
+     * @param jcZx
+     * @return
+     */
+    //TODO 此处需要优化
     @PostMapping("/up_zx")
     public FendaResponse upZx(@RequestBody JcZx jcZx){
         try {
@@ -73,6 +90,13 @@ public class ZxControll {
             return new FendaResponse().message("ERROR").code(500);
         }
     }
+
+    /**
+     * 更新资讯的详情，PS 更新的是所有详情，所以需要传所有详情上来
+     * @param jcZxXq
+     * @return
+     */
+    //TODO 此处需要优化，只更新指定的属性
     @PostMapping("/up_xq")
     public FendaResponse upZx(@RequestBody JcZxXq jcZxXq){
         try {

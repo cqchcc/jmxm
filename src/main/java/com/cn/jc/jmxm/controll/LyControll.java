@@ -19,6 +19,12 @@ public class LyControll {
     @Autowired
     private LyService lyService;
 
+    /**
+     * 用户新增留言接口
+     * @param jcLiuYan
+     * @param httpServletRequest
+     * @return
+     */
     @PostMapping("/ins_ly")
     public FendaResponse InsLy(@RequestBody JcLiuYan jcLiuYan, HttpServletRequest httpServletRequest) {
         try {
@@ -31,7 +37,7 @@ public class LyControll {
             lyService.insMessageWait(jcLiuYan,httpServletRequest);
             return new FendaResponse().message("SUCCESS").code(200);
         } catch (Exception e) {
-            log.error("新增留言报错", e);
+            log.error("新增留言异常", e);
             return new FendaResponse().message("ERROR").code(500);
         }
     }

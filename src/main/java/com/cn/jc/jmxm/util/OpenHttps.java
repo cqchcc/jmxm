@@ -65,6 +65,7 @@ public class OpenHttps {
             String courseFile = directory.getCanonicalPath();
 
             String fileName = courseFile + "/" + lj + "/" + name;
+
             log.info("图片存放地址:" + fileName);
             DataInputStream fileInputStream = new DataInputStream(url1.openStream());
             @SuppressWarnings("resource")// 创建输出流输入存放地址

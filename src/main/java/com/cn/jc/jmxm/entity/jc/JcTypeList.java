@@ -9,6 +9,7 @@ public class JcTypeList {
   private String url;
   private String flag;
   private String name;
+  private int version;
 
 
 }
