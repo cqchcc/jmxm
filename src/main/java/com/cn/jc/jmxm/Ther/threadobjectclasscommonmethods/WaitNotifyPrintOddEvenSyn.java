@@ -20,7 +20,10 @@ public class WaitNotifyPrintOddEvenSyn {
                     synchronized (lock) {
                         if ((count & 1) == 0) {
                             System.out.println(Thread.currentThread().getName() + ":" + count++);
+
                         }
+
+
                     }
                 }
             }
