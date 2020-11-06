@@ -14,7 +14,8 @@ public class ThreadPoolUtil {
         if (null == threadPoolExecutor){
             synchronized (ThreadPoolUtil.class){
                 if (null == threadPoolExecutor){
-                    threadPoolExecutor = new ThreadPoolExecutor(20, 30, 10 * 60, TimeUnit.SECONDS, new LinkedBlockingDeque<>());
+                    threadPoolExecutor = new ThreadPoolExecutor(20, 30,
+                            10 * 60, TimeUnit.SECONDS, new LinkedBlockingDeque<>());
                 }
             }
         }
